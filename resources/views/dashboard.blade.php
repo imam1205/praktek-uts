@@ -17,7 +17,7 @@
                     <div class="text-sm">
                         <p class="font-semibold">Julien Thorne</p>
                         <p class="text-xs text-slate-300">April 27, 2026</p>
-                    </div>
+                    </div
                 </div>
                 <a href="#" class="inline-flex items-center space-x-2 text-white font-semibold group/btn pt-2">
                     <span>Read Full Story</span>
