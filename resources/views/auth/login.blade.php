@@ -58,15 +58,7 @@
             z-index: 1;
         }
 
-        /* ── Blue border frame (like the reference image) ── */
-        .frame-border {
-            position: fixed;
-            inset: 10px;
-            border: 3px solid rgba(59, 130, 246, 0.7);
-            border-radius: 20px;
-            z-index: 2;
-            pointer-events: none;
-        }
+        /* ── Blue border frame removed ── */
 
         /* ── Top-left logo ── */
         .site-logo {

@@ -11,7 +11,7 @@
         body{font-family:'Inter',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden}
         .bg{position:fixed;inset:0;background-image:url('/images/travel_bg.png');background-size:cover;background-position:center;z-index:0}
         .overlay{position:fixed;inset:0;background:rgba(0,0,0,.32);z-index:1}
-        .frame{position:fixed;inset:10px;border:3px solid rgba(139,92,246,.65);border-radius:20px;z-index:2;pointer-events:none}
+        .frame{display:none}
         .logo{position:fixed;top:26px;left:30px;z-index:10;display:flex;align-items:center;gap:8px;color:#fff;font-weight:700;font-size:1rem;text-shadow:0 1px 4px rgba(0,0,0,.5)}
         .logo svg{width:22px;height:22px;fill:#A78BFA}
         .wrapper{position:relative;z-index:10;width:100%;max-width:460px;padding:0 20px;animation:up .5s cubic-bezier(.22,1,.36,1)}
