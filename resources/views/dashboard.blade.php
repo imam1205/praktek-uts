@@ -16,7 +16,7 @@
                     <img src="https://ui-avatars.com/api/?name=Julien+Thorne&background=fff&color=0f4c81" class="w-8 h-8 rounded-full border border-white" alt="Author">
                     <div class="text-sm">
                         <p class="font-semibold">Julien Thorne</p>
-                        <p class="text-xs text-slate-300">April 27, 2024</p>
+                        <p class="text-xs text-slate-300">April 27, 2026</p>
                     </div>
                 </div>
                 <a href="#" class="inline-flex items-center space-x-2 text-white font-semibold group/btn pt-2">
