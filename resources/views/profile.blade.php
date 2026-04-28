@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'Elena Rodriguez - Reader Profile')
+@section('title', (auth()->user()->name ?? 'Reader') . ' - Profile')
 
 @section('content')
 <div class="space-y-12">
@@ -8,7 +8,7 @@
     <section class="flex flex-col md:flex-row items-center md:items-start space-y-8 md:space-y-0 md:space-x-12">
         <div class="relative">
             <div class="w-40 h-40 rounded-[2.5rem] overflow-hidden border-4 border-white shadow-2xl ring-1 ring-slate-200">
-                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=400" alt="Elena Rodriguez" class="w-full h-full object-cover">
+                <img src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name ?? 'Guest') }}&background=random" alt="{{ auth()->user()->name ?? 'Guest User' }}" class="w-full h-full object-cover">
             </div>
             <button class="absolute bottom-2 right-2 p-2 bg-white rounded-full shadow-lg border border-slate-100 text-blue-600 hover:scale-110 transition-transform">
                 <i data-lucide="edit-3" class="w-4 h-4"></i>
@@ -18,8 +18,8 @@
         <div class="flex-1 space-y-6 text-center md:text-left">
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div>
-                    <h2 class="text-4xl font-serif font-bold text-slate-900">Elena Rodriguez</h2>
-                    <p class="text-slate-500 mt-2 max-w-lg">Curious explorer & slow travel advocate. Exploring the hidden corners of Southern Europe and the Andes.</p>
+                    <h2 class="text-4xl font-serif font-bold text-slate-900">{{ auth()->user()->name ?? 'Guest User' }}</h2>
+                    <p class="text-slate-500 mt-2 max-w-lg">{{ auth()->user()->email ?? 'No email' }} | Member since {{ auth()->user()->created_at ? auth()->user()->created_at->format('M Y') : 'recently' }}</p>
                 </div>
                 <div class="flex space-x-8 justify-center md:justify-start bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
                     <div class="text-center">
