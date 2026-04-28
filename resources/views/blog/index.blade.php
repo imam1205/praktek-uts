@@ -1,118 +1,99 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Go-Blog — Beranda</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        *{box-sizing:border-box;margin:0;padding:0}
-        body{font-family:'Inter',sans-serif;background:#F8FAFC;color:#1E293B}
-        .navbar{background:#fff;border-bottom:1px solid #E2E8F0;padding:0 32px;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:0 1px 8px rgba(0,0,0,.06)}
-        .brand{display:flex;align-items:center;gap:8px;font-weight:800;font-size:1.2rem;color:#2563EB;text-decoration:none}
-        .brand svg{width:24px;height:24px;fill:#2563EB}
-        .nav-links{display:flex;align-items:center;gap:16px}
-        .btn-nav{padding:8px 20px;border-radius:50px;font-size:.85rem;font-weight:600;text-decoration:none;transition:all .2s}
-        .btn-outline{border:1.5px solid #E2E8F0;color:#64748B}
-        .btn-outline:hover{border-color:#2563EB;color:#2563EB}
-        .btn-primary{background:#2563EB;color:#fff;box-shadow:0 4px 12px rgba(37,99,235,.3)}
-        .btn-primary:hover{background:#1D4ED8}
-        .hero{background:linear-gradient(135deg,#1E3A8A 0%,#2563EB 50%,#3B82F6 100%);color:#fff;padding:80px 32px;text-align:center}
-        .hero h1{font-size:2.8rem;font-weight:800;margin-bottom:12px;letter-spacing:-1px}
-        .hero p{font-size:1.05rem;opacity:.85;max-width:480px;margin:0 auto 28px}
-        .hero-btn{display:inline-block;padding:13px 32px;background:#fff;color:#2563EB;border-radius:50px;font-weight:700;font-size:.95rem;text-decoration:none;box-shadow:0 8px 24px rgba(0,0,0,.15);transition:transform .2s}
-        .hero-btn:hover{transform:translateY(-2px)}
-        .container{max-width:1100px;margin:0 auto;padding:48px 24px}
-        .section-title{font-size:1.4rem;font-weight:700;margin-bottom:28px;color:#1E293B}
-        .posts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px}
-        .post-card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.07);transition:transform .2s,box-shadow .2s;text-decoration:none;display:block}
-        .post-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.12)}
-        .post-img{height:180px;background:linear-gradient(135deg,#DBEAFE,#EFF6FF);display:flex;align-items:center;justify-content:center}
-        .post-img svg{width:48px;height:48px;color:#93C5FD}
-        .post-body{padding:20px}
-        .post-cat{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#2563EB;background:#EFF6FF;padding:3px 10px;border-radius:20px;display:inline-block;margin-bottom:10px}
-        .post-title{font-size:1rem;font-weight:700;color:#1E293B;margin-bottom:8px;line-height:1.4}
-        .post-excerpt{font-size:.83rem;color:#64748B;line-height:1.5;margin-bottom:14px}
-        .post-meta{display:flex;align-items:center;gap:12px;font-size:.75rem;color:#94A3B8}
-        .empty-state{text-align:center;padding:80px 20px;color:#64748B}
-        .empty-state svg{width:64px;height:64px;color:#CBD5E1;margin-bottom:16px}
-        .empty-state h3{font-size:1.2rem;font-weight:600;margin-bottom:8px}
-        footer{background:#1E293B;color:#94A3B8;text-align:center;padding:24px;font-size:.83rem;margin-top:60px}
-    </style>
-</head>
-<body>
-    <nav class="navbar">
-        <a href="{{ route('home') }}" class="brand">
-            <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-            Go-Blog
-        </a>
-        <div class="nav-links">
-            @auth
-                <span style="font-size:.85rem;color:#64748B">Hai, {{ auth()->user()->name }}!</span>
-                @if(auth()->user()->isAdmin())
-                    <a href="{{ route('admin.dashboard') }}" class="btn-nav btn-primary">Dashboard</a>
-                @endif
-                <form method="POST" action="{{ route('logout') }}" style="display:inline">
-                    @csrf
-                    <button type="submit" class="btn-nav btn-outline" style="border:none;cursor:pointer;background:none;font-family:inherit">Keluar</button>
-                </form>
-            @else
-                <a href="{{ route('login.visitor') }}" class="btn-nav btn-outline">Masuk</a>
-                <a href="{{ route('register') }}" class="btn-nav btn-primary">Daftar</a>
-            @endauth
-        </div>
-    </nav>
+@extends('layouts.main')
+@section('title', 'Go-Blog - Explore')
 
-    @if(session('success'))
-        <div style="background:#ECFDF5;border-bottom:1px solid #6EE7B7;padding:12px 32px;font-size:.85rem;color:#065F46;text-align:center">
-            {{ session('success') }}
-        </div>
-    @endif
+@section('content')
 
-    <section class="hero">
-        <h1>Jelajahi Dunia Bersama Kami ✈️</h1>
-        <p>Temukan cerita perjalanan inspiratif dari berbagai penjuru dunia</p>
-        @guest
-            <a href="{{ route('register') }}" class="hero-btn">Bergabung Sekarang</a>
-        @endguest
-    </section>
+@if(session('success'))
+    <div class="mb-8 p-4 bg-green-50 border-l-4 border-green-500 text-green-700 rounded-r-lg">
+        {{ session('success') }}
+    </div>
+@endif
 
-    <div class="container">
-        <div class="section-title">Artikel Terbaru</div>
+@if($posts->isEmpty())
+    <div class="text-center py-20 text-slate-500">
+        <i data-lucide="inbox" class="w-16 h-16 mx-auto mb-4 opacity-50"></i>
+        <h3 class="text-xl font-semibold mb-2">No Stories Yet</h3>
+        <p>Check back later for new discoveries.</p>
+    </div>
+@else
+    @php
+        $featured = $posts->first();
+        $others = $posts->slice(1);
+    @endphp
 
-        @if($posts->isEmpty())
-            <div class="empty-state">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                </svg>
-                <h3>Belum Ada Artikel</h3>
-                <p>Admin belum memposting artikel apapun. Cek lagi nanti!</p>
+    <!-- Featured Post -->
+    <div class="mb-12 group cursor-pointer" onclick="window.location='{{ route('posts.show', $featured->slug) }}'">
+        <div class="relative h-[400px] rounded-[2.5rem] overflow-hidden shadow-sm group-hover:shadow-xl transition-all duration-300">
+            <!-- Random landscape image for the featured post -->
+            <img src="https://images.unsplash.com/photo-1512100356356-de1b84283e18?auto=format&fit=crop&q=80&w=1200" alt="{{ $featured->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+            
+            <div class="absolute bottom-0 left-0 p-10 text-white w-full md:w-2/3">
+                <span class="px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-xs font-bold tracking-widest uppercase mb-4 inline-block shadow-sm">{{ $featured->category ?? 'Destination' }}</span>
+                <h2 class="text-4xl md:text-5xl font-serif font-bold mb-3 leading-tight drop-shadow-md">{{ $featured->title }}</h2>
+                <p class="text-white/90 line-clamp-2 mb-6 max-w-lg drop-shadow-sm">{{ Str::limit($featured->body, 120) }}</p>
+                <div class="flex items-center space-x-3">
+                    <img src="https://ui-avatars.com/api/?name={{ urlencode($featured->user->name ?? 'Admin') }}&background=0f4c81&color=fff" class="w-10 h-10 rounded-full border-2 border-white/80 shadow-md">
+                    <div>
+                        <p class="text-sm font-semibold drop-shadow-sm">{{ $featured->user->name ?? 'Admin' }}</p>
+                        <p class="text-[10px] text-white/80 uppercase tracking-wider font-medium">{{ $featured->created_at->format('d M Y') }}</p>
+                    </div>
+                </div>
             </div>
-        @else
-            <div class="posts-grid">
-                @foreach($posts as $post)
-                    <a href="{{ route('posts.show', $post->slug) }}" class="post-card">
-                        <div class="post-img">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064"/>
-                            </svg>
-                        </div>
-                        <div class="post-body">
-                            <span class="post-cat">{{ $post->category ?? 'Umum' }}</span>
-                            <div class="post-title">{{ $post->title }}</div>
-                            <div class="post-excerpt">{{ Str::limit($post->excerpt ?? $post->body, 90) }}</div>
-                            <div class="post-meta">
-                                <span>📍 {{ $post->location }}</span>
-                                <span>👁 {{ $post->views }}</span>
-                            </div>
-                        </div>
-                    </a>
-                @endforeach
-            </div>
-            <div style="margin-top:32px">{{ $posts->links() }}</div>
-        @endif
+        </div>
     </div>
 
-    <footer>© {{ date('Y') }} Go-Blog. Platform blog travel terbaik.</footer>
-</body>
-</html>
+    @if($others->isNotEmpty())
+        <!-- Latest Discoveries -->
+        <div class="flex items-center justify-between mb-8">
+            <div>
+                <h3 class="text-2xl font-serif font-bold text-slate-900">Latest Discoveries</h3>
+                <p class="text-sm text-slate-500 mt-1">Curated stories from the world's most remote corners.</p>
+            </div>
+            <div class="hidden sm:flex space-x-2 text-sm font-semibold">
+                <button class="px-4 py-2 text-blue-600 bg-blue-50 rounded-lg">Recent</button>
+                <button class="px-4 py-2 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors">Popular</button>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            @foreach($others as $index => $post)
+                @php
+                    // Using different random images for variety in dummy UI
+                    $images = [
+                        'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&q=80&w=800',
+                        'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80&w=800',
+                        'https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&q=80&w=800',
+                        'https://images.unsplash.com/photo-1548013146-72479768bbaa?auto=format&fit=crop&q=80&w=800',
+                        'https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?auto=format&fit=crop&q=80&w=800'
+                    ];
+                    $imgSrc = $images[$index % count($images)];
+                @endphp
+                <a href="{{ route('posts.show', $post->slug) }}" class="group bg-white rounded-[2rem] overflow-hidden border border-slate-100 shadow-sm hover:shadow-xl hover:border-blue-200 transition-all duration-300 flex flex-col">
+                    <div class="h-48 overflow-hidden relative">
+                        <img src="{{ $imgSrc }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <span class="text-[10px] font-bold text-blue-600 uppercase tracking-widest">{{ $post->category ?? 'Travel' }}</span>
+                        <h4 class="font-serif font-bold text-slate-900 text-lg mt-2 mb-3 group-hover:text-blue-700 transition-colors line-clamp-2">{{ $post->title }}</h4>
+                        <p class="text-xs text-slate-500 line-clamp-2 mb-6 leading-relaxed">{{ Str::limit($post->body, 90) }}</p>
+                        
+                        <div class="flex items-center justify-between mt-auto pt-4 border-t border-slate-50">
+                            <div class="flex items-center space-x-2">
+                                <img src="https://ui-avatars.com/api/?name={{ urlencode($post->user->name ?? 'Admin') }}&background=random" class="w-5 h-5 rounded-full">
+                                <span class="text-[11px] font-semibold text-slate-700">{{ $post->user->name ?? 'Admin' }}</span>
+                            </div>
+                            <span class="text-[10px] text-slate-400 font-medium">{{ $post->views }} Views</span>
+                        </div>
+                    </div>
+                </a>
+            @endforeach
+        </div>
+
+        <div class="mt-12 flex justify-center">
+            {{ $posts->links() }}
+        </div>
+    @endif
+@endif
+
+@endsection

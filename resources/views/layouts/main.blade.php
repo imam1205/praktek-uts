@@ -4,7 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Go-Blog - Reader Edition')</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <!-- Removed vite directive due to missing build manifest -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        sidebar: { bg: '#0f4c81', hover: '#1d5b90' }
+                    }
+                }
+            }
+        }
+    </script>
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body class="bg-slate-50 font-sans antialiased">
@@ -17,7 +29,7 @@
             </div>
 
             <nav class="flex-1 px-4 space-y-2">
-                <a href="/" class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-sidebar-hover transition-colors {{ request()->is('/') ? 'sidebar-active' : '' }}">
+                <a href="{{ route('home') }}" class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-sidebar-hover transition-colors {{ request()->routeIs('home') ? 'bg-white/10' : '' }}">
                     <i data-lucide="home" class="w-5 h-5"></i>
                     <span>Home</span>
                 </a>
@@ -33,7 +45,7 @@
                     <i data-lucide="bookmark" class="w-5 h-5"></i>
                     <span>Bookmarks</span>
                 </a>
-                <a href="/profile" class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-sidebar-hover transition-colors {{ request()->is('profile') ? 'sidebar-active' : '' }}">
+                <a href="{{ route('profile') }}" class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-sidebar-hover transition-colors {{ request()->routeIs('profile') ? 'bg-white/10' : '' }}">
                     <i data-lucide="user" class="w-5 h-5"></i>
                     <span>Profile</span>
                 </a>
@@ -49,9 +61,18 @@
                     <span>Help</span>
                 </a>
                 <div class="mt-8">
-                    <button class="w-full py-2 px-4 bg-white text-blue-900 rounded-lg text-sm font-semibold hover:bg-blue-50 transition-colors shadow-lg">
-                        Write a Story
-                    </button>
+                    @auth
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="w-full py-2 px-4 bg-white text-blue-900 rounded-lg text-sm font-semibold hover:bg-blue-50 transition-colors shadow-lg">
+                            Logout
+                        </button>
+                    </form>
+                    @else
+                    <a href="{{ route('login.visitor') }}" class="block text-center w-full py-2 px-4 bg-white text-blue-900 rounded-lg text-sm font-semibold hover:bg-blue-50 transition-colors shadow-lg">
+                        Login
+                    </a>
+                    @endauth
                 </div>
             </div>
         </aside>
@@ -73,11 +94,19 @@
                         <span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
                     </button>
                     <div class="flex items-center space-x-3 pl-6 border-l border-slate-200">
+                        @auth
                         <div class="text-right hidden sm:block">
-                            <p class="text-sm font-semibold text-slate-900 leading-tight">Elena Rodriguez</p>
-                            <p class="text-xs text-slate-500">Explorer Level 4</p>
+                            <p class="text-sm font-semibold text-slate-900 leading-tight">{{ auth()->user()->name }}</p>
+                            <p class="text-xs text-slate-500">{{ auth()->user()->role === 'admin' ? 'Administrator' : 'Explorer Level 4' }}</p>
                         </div>
-                        <img src="https://ui-avatars.com/api/?name=Elena+Rodriguez&background=0f4c81&color=fff" alt="Elena Rodriguez" class="w-10 h-10 rounded-full border-2 border-white shadow-sm ring-1 ring-slate-200">
+                        <img src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=0f4c81&color=fff" alt="{{ auth()->user()->name }}" class="w-10 h-10 rounded-full border-2 border-white shadow-sm ring-1 ring-slate-200">
+                        @else
+                        <div class="text-right hidden sm:block">
+                            <p class="text-sm font-semibold text-slate-900 leading-tight">Guest User</p>
+                            <p class="text-xs text-slate-500">Not logged in</p>
+                        </div>
+                        <img src="https://ui-avatars.com/api/?name=Guest&background=94a3b8&color=fff" alt="Guest" class="w-10 h-10 rounded-full border-2 border-white shadow-sm ring-1 ring-slate-200">
+                        @endauth
                     </div>
                 </div>
             </header>

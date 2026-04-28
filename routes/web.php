@@ -12,7 +12,11 @@ use App\Http\Controllers\AuthController;
 */
 
 // ── Halaman Publik (Pengunjung) ──────────────────────────────────────────
-Route::get('/', [PostController::class, 'index'])->name('home');
+Route::get('/', function () {
+    return redirect()->route('login');
+});
+
+Route::get('/blog', [PostController::class, 'index'])->name('home');
 Route::get('/blog/{post:slug}', [PostController::class, 'show'])->name('posts.show');
 
 // Komentar pengunjung
