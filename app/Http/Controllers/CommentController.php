@@ -5,26 +5,41 @@ namespace App\Http\Controllers;
 use App\Models\Comment;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CommentController extends Controller
 {
     /**
-     * Simpan komentar baru dari pengunjung.
+     * Simpan komentar baru dari pengunjung (guest atau user login).
      */
     public function store(Request $request, Post $post)
     {
-        $validated = $request->validate([
-            'guest_name'  => ['required', 'string', 'max:80'],
-            'guest_email' => ['nullable', 'email', 'max:120'],
-            'content'     => ['required', 'string', 'max:2000'],
-        ]);
+        if (Auth::check()) {
+            // User yang sudah login
+            $validated = $request->validate([
+                'content' => ['required', 'string', 'max:2000'],
+            ]);
 
-        $post->comments()->create([
-            'guest_name'  => $validated['guest_name'],
-            'guest_email' => $validated['guest_email'] ?? null,
-            'content'     => $validated['content'],
-            'status'      => 'approved',
-        ]);
+            $post->comments()->create([
+                'user_id'  => Auth::id(),
+                'content'  => $validated['content'],
+                'status'   => 'approved',
+            ]);
+        } else {
+            // Guest / tamu
+            $validated = $request->validate([
+                'guest_name'  => ['required', 'string', 'max:80'],
+                'guest_email' => ['nullable', 'email', 'max:120'],
+                'content'     => ['required', 'string', 'max:2000'],
+            ]);
+
+            $post->comments()->create([
+                'guest_name'  => $validated['guest_name'],
+                'guest_email' => $validated['guest_email'] ?? null,
+                'content'     => $validated['content'],
+                'status'      => 'approved',
+            ]);
+        }
 
         return back()->with('success', 'Komentar Anda berhasil dikirim!');
     }
@@ -34,7 +49,7 @@ class CommentController extends Controller
      */
     public function adminIndex()
     {
-        $comments = Comment::with('post')
+        $comments = Comment::with(['post', 'user'])
                            ->latest()
                            ->paginate(20);
 

@@ -59,15 +59,20 @@
                 <i data-lucide="file-text" class="w-4 h-4 flex-shrink-0"></i>
                 <span>Posts</span>
             </a>
+            <a href="{{ route('admin.comments.index') }}"
+               class="sidebar-link flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm {{ request()->routeIs('admin.comments.*') ? 'active' : '' }}">
+                <i data-lucide="message-circle" class="w-4 h-4 flex-shrink-0"></i>
+                <span>Comments</span>
+            </a>
+            <a href="{{ route('admin.profile') }}"
+               class="sidebar-link flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm {{ request()->routeIs('admin.profile*') ? 'active' : '' }}">
+                <i data-lucide="user" class="w-4 h-4 flex-shrink-0"></i>
+                <span>Profile</span>
+            </a>
             <a href="#"
                class="sidebar-link flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm">
                 <i data-lucide="image" class="w-4 h-4 flex-shrink-0"></i>
                 <span>Media Library</span>
-            </a>
-            <a href="#"
-               class="sidebar-link flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm">
-                <i data-lucide="bar-chart-2" class="w-4 h-4 flex-shrink-0"></i>
-                <span>Analytics</span>
             </a>
             <a href="#"
                class="sidebar-link flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm">

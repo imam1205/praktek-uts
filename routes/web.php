@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,7 +20,7 @@ Route::get('/', function () {
 Route::get('/blog', [PostController::class, 'index'])->name('home');
 Route::get('/blog/{post:slug}', [PostController::class, 'show'])->name('posts.show');
 
-// Komentar pengunjung
+// Komentar pengunjung (guest & authenticated)
 Route::post('/blog/{post}/comments', [CommentController::class, 'store'])->name('comments.store');
 
 
@@ -70,7 +71,11 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         return view('admin.profile');
     })->name('profile');
 
-    // Post Management
+    // Profile Update (CRUD)
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
+
+    // Post Management (CRUD)
     Route::get('/posts', [PostController::class, 'adminIndex'])->name('posts.index');
     Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create');
     Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
@@ -78,7 +83,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::put('/posts/{post}', [PostController::class, 'update'])->name('posts.update');
     Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
 
-    // Comment Management
+    // Comment Management (CRUD)
     Route::get('/comments', [CommentController::class, 'adminIndex'])->name('comments.index');
     Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
     Route::patch('/comments/{comment}/approve', [CommentController::class, 'approve'])->name('comments.approve');

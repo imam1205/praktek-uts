@@ -34,45 +34,80 @@
     <!-- Comments Section -->
     <div class="pt-10 border-t border-slate-200">
         <h3 class="text-2xl font-serif font-bold text-slate-900 mb-8">Comments ({{ $comments->count() }})</h3>
-        
-        @auth
-            <div class="bg-slate-50 p-6 rounded-3xl mb-10 border border-slate-100">
-                <form action="{{ route('comments.store', $post) }}" method="POST">
-                    @csrf
-                    <div class="mb-4">
-                        <textarea name="body" class="w-full bg-white border border-slate-200 rounded-2xl p-4 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all resize-none text-sm" rows="3" placeholder="Share your thoughts..." required></textarea>
-                    </div>
-                    <div class="flex justify-end">
-                        <button type="submit" class="px-6 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-bold hover:bg-blue-700 transition-colors shadow-lg shadow-blue-500/30">
-                            Post Comment
-                        </button>
-                    </div>
-                </form>
-            </div>
-        @else
-            <div class="bg-blue-50 p-6 rounded-3xl mb-10 text-center border border-blue-100">
-                <p class="text-blue-800 text-sm mb-4">You need to be signed in to leave a comment.</p>
-                <a href="{{ route('login.visitor') }}" class="inline-block px-6 py-2.5 bg-white text-blue-700 rounded-xl text-sm font-bold shadow-sm hover:shadow-md transition-shadow">
-                    Sign In
-                </a>
-            </div>
-        @endauth
 
+        @if(session('success'))
+            <div class="mb-6 p-4 bg-green-50 border-l-4 border-green-500 text-green-700 rounded-r-lg text-sm">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if($errors->any())
+            <div class="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 rounded-r-lg text-sm">
+                <ul class="list-disc list-inside">
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        {{-- Comment Form --}}
+        <div class="bg-slate-50 p-6 rounded-3xl mb-10 border border-slate-100">
+            <form action="{{ route('comments.store', $post) }}" method="POST">
+                @csrf
+
+                @guest
+                    {{-- Guest fields: name and email --}}
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label for="guest_name" class="block text-xs font-semibold text-slate-600 mb-1.5">Nama Anda <span class="text-red-500">*</span></label>
+                            <input type="text" name="guest_name" id="guest_name" value="{{ old('guest_name') }}"
+                                   class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+                                   placeholder="Nama lengkap" required>
+                        </div>
+                        <div>
+                            <label for="guest_email" class="block text-xs font-semibold text-slate-600 mb-1.5">Email (opsional)</label>
+                            <input type="email" name="guest_email" id="guest_email" value="{{ old('guest_email') }}"
+                                   class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+                                   placeholder="email@contoh.com">
+                        </div>
+                    </div>
+                @else
+                    <div class="flex items-center gap-3 mb-4">
+                        <img src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=0f4c81&color=fff" class="w-8 h-8 rounded-full">
+                        <span class="text-sm font-semibold text-slate-700">{{ auth()->user()->name }}</span>
+                    </div>
+                @endguest
+
+                <div class="mb-4">
+                    <textarea name="content" id="content"
+                              class="w-full bg-white border border-slate-200 rounded-2xl p-4 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all resize-none text-sm"
+                              rows="3" placeholder="Tulis komentar Anda..." required>{{ old('content') }}</textarea>
+                </div>
+                <div class="flex justify-end">
+                    <button type="submit" class="px-6 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-bold hover:bg-blue-700 transition-colors shadow-lg shadow-blue-500/30">
+                        Kirim Komentar
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        {{-- Comments List --}}
         <div class="space-y-6">
             @forelse($comments as $comment)
                 <div class="flex space-x-4">
-                    <img src="https://ui-avatars.com/api/?name={{ urlencode($comment->user->name ?? 'Guest') }}&background=random" class="w-10 h-10 rounded-full shrink-0">
+                    <img src="https://ui-avatars.com/api/?name={{ urlencode($comment->author_name) }}&background=random" class="w-10 h-10 rounded-full shrink-0">
                     <div class="flex-1 bg-slate-50 p-5 rounded-2xl rounded-tl-none border border-slate-100">
                         <div class="flex justify-between items-center mb-2">
-                            <h5 class="font-semibold text-slate-900 text-sm">{{ $comment->user->name ?? 'Guest' }}</h5>
+                            <h5 class="font-semibold text-slate-900 text-sm">{{ $comment->author_name }}</h5>
                             <span class="text-xs text-slate-400">{{ $comment->created_at->diffForHumans() }}</span>
                         </div>
-                        <p class="text-sm text-slate-600 leading-relaxed">{{ $comment->body }}</p>
+                        <p class="text-sm text-slate-600 leading-relaxed">{{ $comment->content }}</p>
                     </div>
                 </div>
             @empty
                 <div class="text-center py-10">
-                    <p class="text-slate-500 text-sm">Be the first to share your thoughts!</p>
+                    <p class="text-slate-500 text-sm">Jadilah yang pertama berkomentar!</p>
                 </div>
             @endforelse
         </div>

@@ -137,31 +137,24 @@
                         </thead>
                         <tbody class="divide-y divide-slate-50">
                             @php
-                            $recentPosts = [
-                                ['title' => 'The Hidden Architecture of Tokyo', 'cat' => 'Culture', 'cat_color' => 'purple', 'date' => 'Oct 12, 2023', 'status' => 'Published', 'views' => '12.4k', 'img' => 'TA'],
-                                ['title' => 'Mist and Pines: A Nordic Journey', 'cat' => 'Adventure', 'cat_color' => 'green', 'date' => 'Oct 10, 2023', 'status' => 'Published', 'views' => '8.2k', 'img' => 'MP'],
-                                ['title' => 'Top 10 Cafes in Lisbon', 'cat' => 'Lifestyle', 'cat_color' => 'orange', 'date' => 'Oct 08, 2023', 'status' => 'Draft', 'views' => '-', 'img' => 'CL'],
-                            ];
+                            $recentDbPosts = \App\Models\Post::with('user')->latest()->take(5)->get();
                             @endphp
-                            @foreach($recentPosts as $post)
+                            @forelse($recentDbPosts as $rPost)
                             <tr class="hover:bg-slate-50 transition-colors">
                                 <td class="py-3">
                                     <div class="flex items-center gap-2.5">
-                                        <div class="w-8 h-8 rounded-lg bg-slate-200 flex items-center justify-center text-[9px] font-bold text-slate-500 flex-shrink-0">{{ $post['img'] }}</div>
-                                        <span class="font-medium text-slate-700 text-xs">{{ $post['title'] }}</span>
+                                        <img src="https://ui-avatars.com/api/?name={{ urlencode($rPost->title) }}&background=random&color=fff" alt="" class="w-8 h-8 rounded-lg flex-shrink-0">
+                                        <a href="{{ route('admin.posts.edit', $rPost->id) }}" class="font-medium text-slate-700 text-xs hover:text-blue-600 transition-colors">{{ Str::limit($rPost->title, 35) }}</a>
                                     </div>
                                 </td>
                                 <td class="py-3">
-                                    @php
-                                    $colors = ['purple'=>'bg-purple-100 text-purple-700','green'=>'bg-green-100 text-green-700','orange'=>'bg-orange-100 text-orange-700'];
-                                    @endphp
-                                    <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide {{ $colors[$post['cat_color']] }}">
-                                        {{ $post['cat'] }}
+                                    <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide bg-purple-100 text-purple-700">
+                                        {{ $rPost->category ?? 'General' }}
                                     </span>
                                 </td>
-                                <td class="py-3 text-slate-500">{{ $post['date'] }}</td>
+                                <td class="py-3 text-slate-500">{{ $rPost->created_at->format('M d, Y') }}</td>
                                 <td class="py-3">
-                                    @if($post['status'] === 'Published')
+                                    @if($rPost->status === 'published')
                                         <span class="flex items-center gap-1 text-slate-600">
                                             <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span> Published
                                         </span>
@@ -173,11 +166,15 @@
                                 </td>
                                 <td class="py-3 text-slate-500">
                                     <span class="flex items-center gap-1">
-                                        <i data-lucide="eye" class="w-3 h-3"></i> {{ $post['views'] }}
+                                        <i data-lucide="eye" class="w-3 h-3"></i> {{ $rPost->views }}
                                     </span>
                                 </td>
                             </tr>
-                            @endforeach
+                            @empty
+                            <tr>
+                                <td colspan="5" class="py-6 text-center text-slate-400 italic text-xs">Belum ada postingan.</td>
+                            </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
